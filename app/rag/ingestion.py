@@ -7,7 +7,7 @@ def extract_pdf_content(uploaded_file):
     elements = partition_pdf(
         file=uploaded_file,
         strategy="fast",
-        infer_table_structure=False
+        infer_table_structure=True
     )
 
     documents = []

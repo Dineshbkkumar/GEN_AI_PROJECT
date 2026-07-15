@@ -2,7 +2,7 @@ import streamlit as st
 
 
 from rag.ingestion import extract_pdf_content
-    
+
 
 
 from rag.embedding import generate_embeddings
@@ -24,24 +24,15 @@ st.set_page_config(
 
 st.title("Enterprise RAG System")
 
-# -----------------------------
-# Session State
-# -----------------------------
 if "documents_processed" not in st.session_state:
     st.session_state.documents_processed = False
 
-# -----------------------------
-# File Upload
-# -----------------------------
 uploaded_files = st.file_uploader(
     "Upload Files",
     accept_multiple_files=True,
     type=["pdf", "xlsx", "xls", "csv", "txt", "docx"]
 )
 
-# -----------------------------
-# Process Documents
-# -----------------------------
 if uploaded_files and not st.session_state.documents_processed:
 
     with st.spinner("Processing uploaded documents..."):
@@ -58,20 +49,10 @@ if uploaded_files and not st.session_state.documents_processed:
 
         embedded_chunks = generate_embeddings(all_chunks)
 
-        st.success(f"Created {len(chunks)} chunks.")
-
-        # -----------------------------
-        # Embeddings
-        # -----------------------------
-        embedded_chunks = generate_embeddings(chunks)
-
         st.success(
             f"Generated {len(embedded_chunks)} embeddings."
         )
 
-        # -----------------------------
-        # Store in Weaviate
-        # -----------------------------
         client = get_weaviate_client()
 
         try:
@@ -101,9 +82,6 @@ if uploaded_files and not st.session_state.documents_processed:
 
             client.close()
 
-# -----------------------------
-# Ask Questions
-# -----------------------------
 if st.session_state.documents_processed:
 
     st.divider()
@@ -141,18 +119,12 @@ if st.session_state.documents_processed:
 
                 client.close()
 
-        # -----------------------------
-        # Display Answer
-        # -----------------------------
         if answer:
 
             st.subheader("Answer")
 
             st.success(answer)
 
-        # -----------------------------
-        # Retrieved Chunks
-        # -----------------------------
         if retrieved_docs:
 
             with st.expander("Retrieved Chunks"):
@@ -162,14 +134,21 @@ if st.session_state.documents_processed:
                     start=1
                 ):
 
-                    st.markdown(f"### Chunk {i}")
+                    is_table = doc.get("type") == "Table"
+                    badge = "Table" if is_table else "Text"
+
+                    st.markdown(f"### Chunk {i} [{badge}]")
 
                     st.write(doc["text"])
+
+                    st.caption(
+                        f"Source: {doc.get('source', 'Unknown')} | Page: {doc.get('page', 'N/A')}"
+                    )
 
                     if "distance" in doc:
 
                         st.caption(
-                            f"Distance: {doc['distance']:.4f}"
+                            f"Relevance: {(1 - doc['distance'])*100:.1f}%"
                         )
 
                     st.divider()

@@ -64,6 +64,11 @@ def create_collection(client):
                 Property(
                     name="type",
                     data_type=DataType.TEXT
+                ),
+
+                Property(
+                    name="is_table",
+                    data_type=DataType.BOOLEAN
                 )
 
             ]
@@ -128,6 +133,11 @@ def store_embeddings(
                 "type": metadata.get(
                     "type",
                     ""
+                ),
+
+                "is_table": metadata.get(
+                    "is_table",
+                    False
                 )
 
             },

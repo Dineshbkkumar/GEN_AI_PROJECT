@@ -5,6 +5,8 @@ openpyxl==3.1.5
 xlrd==2.0.1
 python-docx==1.1.2
 langchain-text-splitters==0.3.8
+langchain-core>=0.3.51
 sentence-transformers==4.1.0
 weaviate-client==4.15.4
 python-dotenv==1.1.0
+groq>=0.7.0

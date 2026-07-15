@@ -39,8 +39,8 @@ def extract_pdf_content(uploaded_file):
         )
 
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=100,
+        chunk_size=1000,
+        chunk_overlap=200,
         separators=[
             "\n\n",
             "\n",

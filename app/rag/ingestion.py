@@ -52,8 +52,9 @@ def extract_pdf_content(uploaded_file):
         chunk_overlap=300,
         separators=[
             "\n\n",
-            "\n",
             ". ",
+            "! ",
+            "? ",
             " ",
             ""
         ]

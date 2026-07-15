@@ -6,9 +6,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 def extract_pdf_content(uploaded_file):
     elements = partition_pdf(
         file=uploaded_file,
-        strategy="fast",
+        strategy="hi_res",
         infer_table_structure=True
     )
+
+    print(f"\n=== PDF Extraction Debug ===")
+    print(f"Total elements: {len(elements)}")
+    for i, elem in enumerate(elements[:5]):
+        print(f"Element {i}: {elem.category} - {str(elem)[:100]}")
+    print("=== End Debug ===\n")
 
     documents = []
 

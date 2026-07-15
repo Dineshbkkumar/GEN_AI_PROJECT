@@ -2,7 +2,7 @@ import os
 
 import weaviate
 from dotenv import load_dotenv
-from weaviate.classes.init import Auth
+from weaviate.classes.init import Auth, AdditionalConfig, Timeout
 from weaviate.classes.config import Property, DataType
 
 
@@ -16,13 +16,17 @@ COLLECTION_NAME = "RAGDocuments"
 
 def get_weaviate_client():
     """
-    Connect to Weaviate Cloud
+    Connect to Weaviate Cloud with timeout and gRPC configuration
     """
 
     client = weaviate.connect_to_weaviate_cloud(
         cluster_url=WEAVIATE_URL,
         auth_credentials=Auth.api_key(
             WEAVIATE_API_KEY
+        ),
+        skip_init_checks=True,
+        additional_config=AdditionalConfig(
+            timeout=Timeout(init=60, query=60)
         )
     )
 

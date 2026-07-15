@@ -6,7 +6,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 def extract_pdf_content(uploaded_file):
     elements = partition_pdf(
         file=uploaded_file,
-        strategy="hi_res",
+        strategy="fast",
         infer_table_structure=True
     )
 
@@ -37,16 +37,19 @@ def extract_pdf_content(uploaded_file):
             "is_table": is_table
         }
 
-        documents.append(
-            Document(
-                page_content=text,
-                metadata=metadata
-            )
+        doc = Document(
+            page_content=text,
+            metadata=metadata
         )
 
+        if is_table:
+            doc.metadata["chunk_size"] = "preserve"
+
+        documents.append(doc)
+
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=2000,
+        chunk_overlap=300,
         separators=[
             "\n\n",
             "\n",
@@ -56,7 +59,12 @@ def extract_pdf_content(uploaded_file):
         ]
     )
 
-    chunks = splitter.split_documents(documents)
+    chunks = []
+    for doc in documents:
+        if doc.metadata.get("chunk_size") == "preserve":
+            chunks.append(doc)
+        else:
+            chunks.extend(splitter.split_documents([doc]))
 
     return chunks
 

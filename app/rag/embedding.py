@@ -9,11 +9,6 @@ def generate_embeddings(chunks):
 
     texts = [chunk.page_content for chunk in chunks]
 
-    print("\n========== TEXTS FOR EMBEDDING ==========\n")
-
-    for text in texts[:10]:
-        print(repr(text))
-
     embeddings = model.encode(
         texts,
         normalize_embeddings=True
@@ -21,7 +16,6 @@ def generate_embeddings(chunks):
 
     embedded_chunks = []
 
-    # Iterate over both chunk and embedding together
     for chunk, embedding in zip(chunks, embeddings):
 
         embedded_chunks.append(

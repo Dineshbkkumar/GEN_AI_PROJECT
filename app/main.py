@@ -47,6 +47,8 @@ if uploaded_files and not st.session_state.documents_processed:
 
         st.success(f"Created {len(all_chunks)} chunks.")
 
+        st.info(f"Sample chunks: {[chunk.page_content[:100] for chunk in all_chunks[:3]]}")
+
         embedded_chunks = generate_embeddings(all_chunks)
 
         st.success(
@@ -104,6 +106,8 @@ if st.session_state.documents_processed:
                     client,
                     query
                 )
+
+                st.info(f"Retrieved {len(retrieved_docs)} relevant chunks")
 
             except Exception as e:
 
